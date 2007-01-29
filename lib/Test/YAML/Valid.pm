@@ -2,10 +2,12 @@ package Test::YAML::Valid;
 
 use warnings;
 use strict;
+use YAML qw(Load LoadFile);
+use Test::Builder;
 
 =head1 NAME
 
-Test::YAML::Valid - The great new Test::YAML::Valid!
+Test::YAML::Valid - Test for valid YAML
 
 =head1 VERSION
 
@@ -17,34 +19,59 @@ our $VERSION = '0.01';
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
+This module lets you easily test the validity of YAML:
 
-Perhaps a little code snippet.
+    use Test::More tests => 3;
+    use Test::Valid::YAML;
 
-    use Test::YAML::Valid;
-
-    my $foo = Test::YAML::Valid->new();
-    ...
+    yaml_string_ok(YAML::Dump({foo => 'bar'}), 'YAML generates good YAML?');
+    yaml_string_ok('this is not YAML, is it?', 'This one will fail');
+    yaml_file_ok('/path/to/some/YAML', '/path/to/some/YAML is YAML');
 
 =head1 EXPORT
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+=over 4
+
+=item * yaml_string_ok
+
+=item * yaml_file_ok
+
+=back
 
 =head1 FUNCTIONS
 
-=head2 function1
+=head2 yaml_string_ok($yaml, [$message])
 
 =cut
 
-sub function1 {
+sub yaml_string_ok($;$) {
+    my $yaml = shift;
+    my $msg  = shift;
+    my $result;
+    
+    my $test = Test::Builder->new();
+    eval {
+	$result = Load($yaml);
+    };
+    $test->ok(!$@, $msg);
+    return $result;
 }
 
-=head2 function2
+=head2 yaml_file_ok($filename, [$message])
 
 =cut
 
-sub function2 {
+sub yaml_file_ok($;$) {    
+    my $file = shift;
+    my $msg  = shift;
+    my $result;
+    
+    my $test = Test::Builder->new();
+    eval {
+	$result = LoadFile($file);
+    };
+    $test->ok(!$@, $msg);
+    return $result;
 }
 
 =head1 AUTHOR

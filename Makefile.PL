@@ -9,8 +9,10 @@ WriteMakefile(
     ABSTRACT_FROM       => 'lib/Test/YAML/Valid.pm',
     PL_FILES            => {},
     PREREQ_PM => {
-        'Test::More' => 0,
-    },
+		  'YAML' => 0,
+		  'Test::Builder' => 0,
+		  'Test::More' => 0,
+		 },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'Test-YAML-Valid-*' },
 );
