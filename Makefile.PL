@@ -12,6 +12,8 @@ WriteMakefile(
 		  'YAML' => 0,
 		  'Test::Builder' => 0,
 		  'Test::More' => 0,
+		  'Directory::Scratch' => 0,
+		  'Exporter' => 0,
 		 },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'Test-YAML-Valid-*' },
