@@ -4,6 +4,10 @@ use warnings;
 use strict;
 use YAML qw(Load LoadFile);
 use Test::Builder;
+use base 'Exporter';
+
+our @EXPORT_OK = qw(yaml_string_ok yaml_file_ok);
+our @EXPORT = @EXPORT_OK;
 
 =head1 NAME
 
