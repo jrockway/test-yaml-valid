@@ -22,7 +22,7 @@ our $VERSION = '0.01';
 This module lets you easily test the validity of YAML:
 
     use Test::More tests => 3;
-    use Test::Valid::YAML;
+    use Test::YAML::Valid;
 
     yaml_string_ok(YAML::Dump({foo => 'bar'}), 'YAML generates good YAML?');
     yaml_string_ok('this is not YAML, is it?', 'This one will fail');
