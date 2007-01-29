@@ -70,6 +70,9 @@ sub yaml_file_ok($;$) {
     eval {
 	$result = LoadFile($file);
     };
+
+    $msg = "$file contains valid YAML" unless $msg;
+    
     $test->ok(!$@, $msg);
     return $result;
 }
