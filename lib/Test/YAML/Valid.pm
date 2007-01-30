@@ -44,7 +44,18 @@ This module lets you easily test the validity of YAML:
     yaml_string_ok(YAML::Dump({foo => 'bar'}), 'YAML generates good YAML?');
     yaml_string_ok('this is not YAML, is it?', 'This one will fail');
     yaml_file_ok('/path/to/some/YAML', '/path/to/some/YAML is YAML');
-    yaml_files_ok('/path/to/YAML/files/*', 'all YAML files are valid');    
+    yaml_files_ok('/path/to/YAML/files/*', 'all YAML files are valid');
+
+You can also test with L<YAML::Syck|YAML::Syck> instead of
+L<YAML|YAML> by passing C<-Syck> in the import list:
+
+    use Test::YAML::Valid qw(-Syck);
+    yaml_string_ok(...); # uses YAML::Syck::Load instead of YAML::Load
+
+It's up to you to make sure you have YAML::Syck if you specify the
+C<-Syck> option, since it's an optional prerequisite to this module.
+If it's requested but not found, a warning will be issued and YAML
+will be used instead.
 
 =head1 EXPORT
 
