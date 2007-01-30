@@ -165,10 +165,8 @@ L<http://search.cpan.org/dist/Test-YAML-Valid>
 
 =head1 ACKNOWLEDGEMENTS
 
-Stevan Little C<< <stevan.little@iinteractive.com> contributed
+Stevan Little C<< <stevan.little@iinteractive.com> >> contributed
 C<yaml_files_ok> and some more tests.
-
-=back
 
 =head1 COPYRIGHT & LICENSE
 
