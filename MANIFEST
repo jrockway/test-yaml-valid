@@ -17,13 +17,22 @@ MANIFEST
 META.yml			# Will be created by "make dist"
 README
 t/00-load.t
+t/01-test-yaml-syck.t
 t/01-test-yaml.t
 t/02-test-yaml-output.t
+t/02-test-yaml-syck-output.t
 t/boilerplate.t
 t/pod-coverage.t
 t/pod.t
-t/yaml/basic.yml
-t/yaml/basic_bad.yml
 t/yaml/all_valid/1.yml
 t/yaml/all_valid/2.yml
 t/yaml/all_valid/3.yml
+t/yaml/all_valid/4.yml
+t/yaml/all_valid/5.yml
+t/yaml/all_valid/6.yml
+t/yaml/basic.yml
+t/yaml/basic_bad.yml
+t/yaml/numbers/0.yml
+t/yaml/numbers/42.yml
+t/yaml/numbers/nothing.yml
+t/yaml/numbers/undef.yml
