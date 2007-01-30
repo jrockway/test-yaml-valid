@@ -113,7 +113,7 @@ sub yaml_files_ok($;$) {
         };
         if ($@) {
             $test->ok(0, $msg);
-            $test->diag("Could not load file: $file.");
+            $test->diag("  Could not load file: $file.");
             return;
         }
     }    
