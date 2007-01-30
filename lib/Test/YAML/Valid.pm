@@ -10,13 +10,23 @@ our @EXPORT = @EXPORT_OK;
 
 sub import {
     my @import = @_;
-
+    my $syck_loaded = 0;
+    my $syck_requested = 0;
+    
     if(grep {/-Syck/} @import){
 	@import = grep {!/-Syck/} @import;
-	eval "use YAML::Syck qw(Load LoadFile)";
+	$syck_requested = 1;
+	eval {
+	    require YAML::Syck;
+	    eval "use YAML::Syck qw(Load LoadFile)";
+	    $syck_loaded = 1;
+	}
     }
-    else {
+    if(!$syck_loaded){
+	require YAML;
 	eval "use YAML qw(Load LoadFile)";
+	Test::Builder->new->diag('Falling back to YAML from YAML::Syck')
+	    if $syck_requested;
     }
     
     __PACKAGE__->export_to_level(1, @import);
