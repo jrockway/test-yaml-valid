@@ -15,11 +15,11 @@ Test::YAML::Valid - Test for valid YAML
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =head1 SYNOPSIS
 
@@ -49,6 +49,9 @@ This module lets you easily test the validity of YAML:
 
 =head2 yaml_string_ok($yaml, [$message])
 
+Test will pass if C<$yaml> contains valid YAML (according to YAML.pm)
+and fail otherwise.
+
 =cut
 
 sub yaml_string_ok($;$) {
@@ -65,6 +68,9 @@ sub yaml_string_ok($;$) {
 }
 
 =head2 yaml_file_ok($filename, [$message])
+
+Test will pass if C<$filename> is a valid YAML file (according to
+YAML.pm) and fail otherwise.
 
 =cut
 
@@ -86,6 +92,10 @@ sub yaml_file_ok($;$) {
 
 =head2 yaml_files_ok($file_glob_string, [$message])
 
+Test will pass if all files matching the glob C<$file_glob_string>
+contain valid YAML.  If a file is not valid, the test will fail and no
+further files will be examined.
+
 =cut
 
 sub yaml_files_ok($;$) {    
@@ -99,11 +109,11 @@ sub yaml_files_ok($;$) {
     
     foreach my $file (glob($file_glob)) {
         eval {
-            push @results => LoadFile($file);
+            push @results, LoadFile($file);
         };
         if ($@) {
             $test->ok(0, $msg);
-            $test->diag("  Could not load file: $file.");
+            $test->diag("Could not load file: $file.");
             return;
         }
     }    
@@ -154,6 +164,11 @@ L<http://search.cpan.org/dist/Test-YAML-Valid>
 =back
 
 =head1 ACKNOWLEDGEMENTS
+
+Stevan Little C<< <stevan.little@iinteractive.com> contributed
+C<yaml_files_ok> and some more tests.
+
+=back
 
 =head1 COPYRIGHT & LICENSE
 
