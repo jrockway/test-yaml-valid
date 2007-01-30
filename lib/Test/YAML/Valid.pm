@@ -84,9 +84,19 @@ will be used instead.
 =head2 yaml_string_ok($yaml, [$message])
 
 Test will pass if C<$yaml> contains valid YAML (according to YAML.pm)
-and fail otherwise.
+and fail otherwise.  Returns the result of loading the YAML.
 
 =cut
+
+# workaround for YAML::Syck -- it doesn't parse report errors!!!!!
+sub _is_undef_yaml($){
+    my $yaml = shift;
+    return unless defined $yaml;
+    return 1 
+      if $yaml =~ /^\n*--- ~\n+$/ ||
+	$yaml =~ /^\n*---\n+$/;
+    return 0;
+}
 
 sub yaml_string_ok($;$) {
     my $yaml = shift;
@@ -97,14 +107,15 @@ sub yaml_string_ok($;$) {
     eval {
 	$result = Load($yaml);
     };
-    $test->ok(!$@, $msg);
+    
+    $test->ok(!$@ && (defined $result || _is_undef_yaml($yaml)), $msg);
     return $result;
 }
 
 =head2 yaml_file_ok($filename, [$message])
 
 Test will pass if C<$filename> is a valid YAML file (according to
-YAML.pm) and fail otherwise.
+YAML.pm) and fail otherwise.  Returns the result of loading the YAML.
 
 =cut
 
@@ -112,15 +123,21 @@ sub yaml_file_ok($;$) {
     my $file = shift;
     my $msg  = shift;
     my $result;
-    
+    my $yaml;
+
     my $test = Test::Builder->new();
     eval {
 	$result = LoadFile($file);
+	if(!defined $result){ # special case for YAML::Syck
+	    open my $fh, '<', $file or die "Can't open $file: $!";
+	    $yaml = do {local $/; <$fh> };
+	    close $fh;
+	}
     };
-
+    
     $msg = "$file contains valid YAML" unless $msg;
     
-    $test->ok(!$@, $msg);
+    $test->ok(!$@ && (defined $result || _is_undef_yaml($yaml)), $msg);
     return $result;
 }
 
@@ -129,6 +146,8 @@ sub yaml_file_ok($;$) {
 Test will pass if all files matching the glob C<$file_glob_string>
 contain valid YAML.  If a file is not valid, the test will fail and no
 further files will be examined.
+
+Returns a list of all loaded YAML;
 
 =cut
 
@@ -140,12 +159,21 @@ sub yaml_files_ok($;$) {
     my $test = Test::Builder->new();
 
     $msg = "$file_glob contains valid YAML files" unless $msg;
-    
+
+    my $result;
+    my $yaml;
     foreach my $file (glob($file_glob)) {
+	next if -d $file; # skip directories
         eval {
-            push @results, LoadFile($file);
+	    $result = LoadFile($file);
+	    if(!defined $result){ # special case for YAML::Syck
+		open my $fh, '<', $file or die "Can't open $file: $!";
+		$yaml = do {local $/; <$fh> };
+		close $fh;
+	    }
+            push @results, $result;
         };
-        if ($@) {
+        if ($@ || !(defined $result || _is_undef_yaml($yaml))) {
             $test->ok(0, $msg);
             $test->diag("  Could not load file: $file.");
             return;
