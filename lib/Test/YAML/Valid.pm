@@ -93,8 +93,9 @@ sub _is_undef_yaml($){
     my $yaml = shift;
     return if !defined $yaml;
     
-    return 1
-      if $yaml =~ /^(?:---)/;
+    return 1 if $yaml =~ /^(?:---(?:\s+~?)?\s+)+\n$/;
+    # XXX: ... should be OK: 
+    #/^(?:---)?(?: ~)?\n+(?:[.][.][.]\n+)?$/;
     
     return 0;
 }
