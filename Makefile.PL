@@ -14,7 +14,7 @@ requires('Exporter');
 requires('Test::Builder');
 
 build_requires('Test::More');
-build_requires('Directory::Scratch');
+build_requires('File::Spec');
 
 auto_install();
 WriteAll();

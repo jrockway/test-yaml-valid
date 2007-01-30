@@ -6,7 +6,7 @@ use YAML qw(Load LoadFile);
 use Test::Builder;
 use base 'Exporter';
 
-our @EXPORT_OK = qw(yaml_string_ok yaml_file_ok);
+our @EXPORT_OK = qw(yaml_string_ok yaml_file_ok yaml_files_ok);
 our @EXPORT = @EXPORT_OK;
 
 =head1 NAME
@@ -31,6 +31,7 @@ This module lets you easily test the validity of YAML:
     yaml_string_ok(YAML::Dump({foo => 'bar'}), 'YAML generates good YAML?');
     yaml_string_ok('this is not YAML, is it?', 'This one will fail');
     yaml_file_ok('/path/to/some/YAML', '/path/to/some/YAML is YAML');
+    yaml_files_ok('/path/to/YAML/files/*', 'all YAML files are valid');    
 
 =head1 EXPORT
 
@@ -39,6 +40,8 @@ This module lets you easily test the validity of YAML:
 =item * yaml_string_ok
 
 =item * yaml_file_ok
+
+=item * yaml_files_ok
 
 =back
 
@@ -80,6 +83,35 @@ sub yaml_file_ok($;$) {
     $test->ok(!$@, $msg);
     return $result;
 }
+
+=head2 yaml_files_ok($file_glob_string, [$message])
+
+=cut
+
+sub yaml_files_ok($;$) {    
+    my $file_glob = shift;
+    my $msg       = shift;
+    my @results;
+    
+    my $test = Test::Builder->new();
+
+    $msg = "$file_glob contains valid YAML files" unless $msg;
+    
+    foreach my $file (glob($file_glob)) {
+        eval {
+            push @results => LoadFile($file);
+        };
+        if ($@) {
+            $test->ok(0, $msg);
+            $test->diag("  Could not load file: $file.");
+            return;
+        }
+    }    
+    
+    $test->ok(1, $msg);
+    return \@results;
+}
+
 
 =head1 AUTHOR
 

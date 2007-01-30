@@ -4,10 +4,12 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+
+use FindBin;
+use File::Spec::Functions;
+
+use Test::More tests => 6;
 use Test::YAML::Valid;
-use Directory::Scratch;
-use YAML qw(DumpFile);
 
 my $yaml =<<'YAML';
 baz:
@@ -22,11 +24,11 @@ YAML
 yaml_string_ok($yaml, 'YAML string is ok');
 yaml_string_ok($yaml);
 
-my $tmp = Directory::Scratch->new();
-
-$tmp->touch('test');
-my $file = $tmp->exists('test');
-DumpFile($file, $yaml);
-
+my $file = catfile($FindBin::Bin, "yaml", "basic.yml");
 yaml_file_ok($file, 'file was OK');
 yaml_file_ok($file);
+
+my $dir = catfile($FindBin::Bin, "yaml", "all_valid");
+
+yaml_files_ok("$dir/*", 'files are all OK');
+yaml_files_ok("$dir/*");
