@@ -2,12 +2,25 @@ package Test::YAML::Valid;
 
 use warnings;
 use strict;
-use YAML qw(Load LoadFile);
 use Test::Builder;
 use base 'Exporter';
 
 our @EXPORT_OK = qw(yaml_string_ok yaml_file_ok yaml_files_ok);
 our @EXPORT = @EXPORT_OK;
+
+sub import {
+    my @import = @_;
+
+    if(grep {/-Syck/} @import){
+	@import = grep {!/-Syck/} @import;
+	eval "use YAML::Syck qw(Load LoadFile)";
+    }
+    else {
+	eval "use YAML qw(Load LoadFile)";
+    }
+    
+    __PACKAGE__->export_to_level(1, @import);
+}
 
 =head1 NAME
 
