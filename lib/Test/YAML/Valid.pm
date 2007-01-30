@@ -91,11 +91,16 @@ and fail otherwise.  Returns the result of loading the YAML.
 # workaround for YAML::Syck -- it doesn't parse report errors!!!!!
 sub _is_undef_yaml($){
     my $yaml = shift;
-    return unless defined $yaml;
-    return 1 
-      if $yaml =~ /^\n*--- ~\n+$/ ||
-	$yaml =~ /^\n*---\n+$/;
+    return if !defined $yaml;
+    
+    return 1
+      if $yaml =~ /^(?:---)/;
+    
     return 0;
+}
+
+sub _is_yaml($$){
+    return (defined $_[0] || _is_undef_yaml($_[1]));
 }
 
 sub yaml_string_ok($;$) {
@@ -103,12 +108,12 @@ sub yaml_string_ok($;$) {
     my $msg  = shift;
     my $result;
     
-    my $test = Test::Builder->new();
     eval {
 	$result = Load($yaml);
     };
-    
-    $test->ok(!$@ && (defined $result || _is_undef_yaml($yaml)), $msg);
+
+    my $test = Test::Builder->new();
+    $test->ok(!$@ && _is_yaml($result,$yaml), $msg);
     return $result;
 }
 
@@ -124,8 +129,6 @@ sub yaml_file_ok($;$) {
     my $msg  = shift;
     my $result;
     my $yaml;
-
-    my $test = Test::Builder->new();
     eval {
 	$result = LoadFile($file);
 	if(!defined $result){ # special case for YAML::Syck
@@ -135,9 +138,9 @@ sub yaml_file_ok($;$) {
 	}
     };
     
+    my $test = Test::Builder->new();
     $msg = "$file contains valid YAML" unless $msg;
-    
-    $test->ok(!$@ && (defined $result || _is_undef_yaml($yaml)), $msg);
+    $test->ok(!$@ && _is_yaml($result,$yaml), $msg);
     return $result;
 }
 
@@ -155,14 +158,12 @@ sub yaml_files_ok($;$) {
     my $file_glob = shift;
     my $msg       = shift;
     my @results;
+    my $result;
     
     my $test = Test::Builder->new();
-
     $msg = "$file_glob contains valid YAML files" unless $msg;
-
-    my $result;
-    my $yaml;
     foreach my $file (glob($file_glob)) {
+	my $yaml = "";
 	next if -d $file; # skip directories
         eval {
 	    $result = LoadFile($file);
@@ -173,7 +174,7 @@ sub yaml_files_ok($;$) {
 	    }
             push @results, $result;
         };
-        if ($@ || !(defined $result || _is_undef_yaml($yaml))) {
+        if ($@ || !_is_yaml($result,$yaml)) {
             $test->ok(0, $msg);
             $test->diag("  Could not load file: $file.");
             return;

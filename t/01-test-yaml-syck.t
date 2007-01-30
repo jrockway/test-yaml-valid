@@ -15,7 +15,7 @@ BEGIN {
 }
 
 use Test::YAML::Valid qw(-Syck);
-plan tests => 6;
+plan tests => 7;
 
 my $yaml =<<'YAML';
 baz:
@@ -34,7 +34,10 @@ my $file = catfile($FindBin::Bin, "yaml", "basic.yml");
 yaml_file_ok($file, 'file was OK');
 yaml_file_ok($file);
 
-my $dir = catfile($FindBin::Bin, "yaml", "all_valid");
+my $dir = catfile($FindBin::Bin, "yaml", "all_valid", '*');
 
-yaml_files_ok("$dir/*", 'files are all OK');
-yaml_files_ok("$dir/*");
+yaml_files_ok($dir, 'files are all OK');
+yaml_files_ok($dir);
+
+my $numbers = catfile($FindBin::Bin, "yaml", "numbers", '*');
+yaml_files_ok($numbers);
