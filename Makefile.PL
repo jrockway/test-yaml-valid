@@ -9,12 +9,14 @@ abstract_from('lib/Test/YAML/Valid.pm');
 license('Perl');
 include('ExtUtils::AutoInstall');
 
-requires('YAML');
+requires('YAML' => '0.60');
 requires('Exporter');
 requires('Test::Builder');
 
 build_requires('Test::More');
 build_requires('File::Spec');
+
+feature('YAML::Syck' => ['YAML::Syck' => '0.60']);
 
 auto_install();
 WriteAll();
