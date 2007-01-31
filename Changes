@@ -1,5 +1,9 @@
 Revision history for Test-YAML-Valid
 
+0.03	31 January 2007
+	Work around braindead Test::More change (no code changes, only
+	tests)
+
 0.02    30 January 2007
         Add support for YAML::Syck
 	Add &yaml_files_ok()        

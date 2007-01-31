@@ -36,9 +36,9 @@ test_out("ok 1 - YAML string is ok");
 test_out("ok 2");
 test_out("not ok 3 - bad YAML string is bad");
 test_err("#   Failed test 'bad YAML string is bad'");
-test_err("#   in $0 at line 45.");
+test_err("#   at $0 line 45.");
 test_out("not ok 4");
-test_err("#   Failed test in $0 at line 46.");
+test_err("#   Failed test at $0 line 46.");
 
 yaml_string_ok($yaml, 'YAML string is ok');
 yaml_string_ok($yaml);
@@ -56,10 +56,10 @@ test_out("ok 1 - YAML file was ok");
 test_out("ok 2 - $file contains valid YAML");
 test_out("not ok 3 - bad YAML file was bad");
 test_err("#   Failed test 'bad YAML file was bad'");
-test_err("#   in $0 at line 66.");
+test_err("#   at $0 line 66.");
 test_out("not ok 4 - $bad_file contains valid YAML");
 test_err("#   Failed test '$bad_file contains valid YAML'");
-test_err("#   in $0 at line 67.");
+test_err("#   at $0 line 67.");
 
 yaml_file_ok($file, 'YAML file was ok');
 yaml_file_ok($file);
@@ -77,11 +77,11 @@ test_out("ok 1 - YAML files are all ok");
 test_out("ok 2 - $dir/* contains valid YAML files");
 test_out("not ok 3 - bad YAML files are not all ok");
 test_err("#   Failed test 'bad YAML files are not all ok'");
-test_err("#   in $0 at line 89.");
+test_err("#   at $0 line 89.");
 test_err("#   Could not load file: $bad_file.");
 test_out("not ok 4 - $bad_dir/* contains valid YAML files");
 test_err("#   Failed test '$bad_dir/* contains valid YAML files'");
-test_err("#   in $0 at line 90.");
+test_err("#   at $0 line 90.");
 test_err("#   Could not load file: $bad_file.");
 
 yaml_files_ok("$dir/*", 'YAML files are all ok');
