@@ -71,20 +71,20 @@ test_test("yaml_file_ok works");
 
 ## test yaml_files_ok ...
 
-my $dir = catfile($FindBin::Bin, "yaml", "all_valid");
-my $bad_dir = catfile($FindBin::Bin, "yaml");
+my $dir = catfile($FindBin::Bin, "yaml", "all_valid", "*");
+my $bad_dir = catfile($FindBin::Bin, "yaml", "*");
 
 test_out("ok 1 - YAML files are all ok");
-test_out("ok 2 - $dir/* contains valid YAML files");
+test_out("ok 2 - $dir contains valid YAML files");
 test_fail(8);
 test_out("not ok 3 - bad YAML files are not all ok");
 test_err("#   Could not load file: $bad_file.");
 test_fail(6);
-test_out("not ok 4 - $bad_dir/* contains valid YAML files");
+test_out("not ok 4 - $bad_dir contains valid YAML files");
 test_err("#   Could not load file: $bad_file.");
-yaml_files_ok("$dir/*", 'YAML files are all ok');
-yaml_files_ok("$dir/*");
-yaml_files_ok("$bad_dir/*", 'bad YAML files are not all ok');
-yaml_files_ok("$bad_dir/*");
+yaml_files_ok("$dir", 'YAML files are all ok');
+yaml_files_ok("$dir");
+yaml_files_ok("$bad_dir", 'bad YAML files are not all ok');
+yaml_files_ok("$bad_dir");
 
 test_test("yaml_files_ok works");

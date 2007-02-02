@@ -92,8 +92,7 @@ and fail otherwise.  Returns the result of loading the YAML.
 sub _is_undef_yaml($){
     my $yaml = shift;
     return if !defined $yaml;
-    
-    return 1 if $yaml =~ /^(?:---(?:\s+~?)?\s+)+\n$/;
+    return 1 if $yaml =~ /^(?:---(?:\s+~?)?\s+)+$/m;
     # XXX: ... should be OK: 
     #/^(?:---)?(?: ~)?\n+(?:[.][.][.]\n+)?$/;
     
