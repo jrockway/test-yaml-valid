@@ -13,7 +13,8 @@ requires('YAML' => '0.60');
 requires('Exporter');
 requires('Test::Builder');
 
-build_requires('Test::More' => '0.67');
+build_requires('Test::More');
+build_requires('Test::Builder::Tester');
 build_requires('File::Spec');
 
 feature('YAML::Syck' => ['YAML::Syck' => '0.60']);

@@ -41,11 +41,9 @@ BAD_YAML
 test_out("ok 1 - YAML string is ok");
 test_out("ok 2");
 test_out("not ok 3 - bad YAML string is bad");
-test_err("#   Failed test 'bad YAML string is bad'");
-test_err("#   at $0 line 51.");
 test_out("not ok 4");
-test_err("#   Failed test at $0 line 52.");
-
+test_fail(4);
+test_fail(4);
 yaml_string_ok($yaml, 'YAML string is ok');
 yaml_string_ok($yaml);
 yaml_string_ok($bad_yaml, 'bad YAML string is bad');
@@ -61,12 +59,9 @@ my $bad_file = catfile($FindBin::Bin, "yaml", "basic_bad.yml");
 test_out("ok 1 - YAML file was ok");
 test_out("ok 2 - $file contains valid YAML");
 test_out("not ok 3 - bad YAML file was bad");
-test_err("#   Failed test 'bad YAML file was bad'");
-test_err("#   at $0 line 72.");
 test_out("not ok 4 - $bad_file contains valid YAML");
-test_err("#   Failed test '$bad_file contains valid YAML'");
-test_err("#   at $0 line 73.");
-
+test_fail(4);
+test_fail(4);
 yaml_file_ok($file, 'YAML file was ok');
 yaml_file_ok($file);
 yaml_file_ok($bad_file, 'bad YAML file was bad');
@@ -81,15 +76,12 @@ my $bad_dir = catfile($FindBin::Bin, "yaml");
 
 test_out("ok 1 - YAML files are all ok");
 test_out("ok 2 - $dir/* contains valid YAML files");
+test_fail(8);
 test_out("not ok 3 - bad YAML files are not all ok");
-test_err("#   Failed test 'bad YAML files are not all ok'");
-test_err("#   at $0 line 95.");
 test_err("#   Could not load file: $bad_file.");
+test_fail(6);
 test_out("not ok 4 - $bad_dir/* contains valid YAML files");
-test_err("#   Failed test '$bad_dir/* contains valid YAML files'");
-test_err("#   at $0 line 96.");
 test_err("#   Could not load file: $bad_file.");
-
 yaml_files_ok("$dir/*", 'YAML files are all ok');
 yaml_files_ok("$dir/*");
 yaml_files_ok("$bad_dir/*", 'bad YAML files are not all ok');
