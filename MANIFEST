@@ -18,9 +18,13 @@ META.yml			# Will be created by "make dist"
 README
 t/00-load.t
 t/01-test-yaml-syck.t
+t/01-test-yaml-tiny.t
+t/01-test-yaml-xs.t
 t/01-test-yaml.t
 t/02-test-yaml-output.t
 t/02-test-yaml-syck-output.t
+t/02-test-yaml-tiny-output.t
+t/02-test-yaml-xs-output.t
 t/boilerplate.t
 t/pod-coverage.t
 t/pod.t
