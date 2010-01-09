@@ -4,31 +4,47 @@ use warnings;
 use strict;
 use Test::Builder;
 use base 'Exporter';
+use Carp qw(confess);
 
 our @EXPORT_OK = qw(yaml_string_ok yaml_file_ok yaml_files_ok);
 our @EXPORT = @EXPORT_OK;
 
 sub import {
-    my @import = @_;
-    my $syck_loaded = 0;
-    my $syck_requested = 0;
-    
-    if(grep {/-Syck/} @import){
-	@import = grep {!/-Syck/} @import;
-	$syck_requested = 1;
-	eval {
-	    require YAML::Syck;
-	    eval "use YAML::Syck qw(Load LoadFile)";
-	    $syck_loaded = 1;
-	}
+    my @_import = @_;
+
+    # sort the import list into attempts to load alternate YAML
+    # parsers ("requests"), and the actual import list to pass to
+    # Exporter.
+    my @requests;
+    my @import;
+    for my $elt (@_import){
+        if( $elt =~ /^-([A-Za-z::]+)$/ ){
+            push @requests, $1;
+        }
+        else {
+            push @import, $elt;
+        }
     }
-    if(!$syck_loaded){
+
+    confess 'You can only specify one YAML module to use; you specified '. scalar @requests
+      if @requests > 1;
+
+    my $request_ok = 0;
+    my $request = $requests[0];
+    if($request){
+        eval {
+            eval "use YAML::$request qw(Load LoadFile); 1" or die;
+            $request_ok = 1;
+        };
+    }
+
+    if(!$request_ok){
 	require YAML;
 	eval "use YAML qw(Load LoadFile)";
-	Test::Builder->new->diag('Falling back to YAML from YAML::Syck')
-	    if $syck_requested;
+	Test::Builder->new->diag("Falling back to YAML from YAML::$request")
+	    if $request;
     }
-    
+
     __PACKAGE__->export_to_level(1, @import);
 }
 
@@ -38,11 +54,11 @@ Test::YAML::Valid - Test for valid YAML
 
 =head1 VERSION
 
-Version 0.03
+Version 0.04
 
 =cut
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 =head1 SYNOPSIS
 
@@ -66,6 +82,9 @@ It's up to you to make sure you have YAML::Syck if you specify the
 C<-Syck> option, since it's an optional prerequisite to this module.
 If it's requested but not found, a warning will be issued and YAML
 will be used instead.
+
+As of version 0.04, you can use any module you want in the same way;
+C<-Tiny> for YAML::Tiny and C<-XS> for YAML::XS.
 
 =head1 EXPORT
 
@@ -93,9 +112,9 @@ sub _is_undef_yaml($){
     my $yaml = shift;
     return if !defined $yaml;
     return 1 if $yaml =~ /^(?:---(?:\s+~?)?\s+)+$/m;
-    # XXX: ... should be OK: 
+    # XXX: ... should be OK:
     #/^(?:---)?(?: ~)?\n+(?:[.][.][.]\n+)?$/;
-    
+
     return 0;
 }
 
@@ -107,7 +126,7 @@ sub yaml_string_ok($;$) {
     my $yaml = shift;
     my $msg  = shift;
     my $result;
-    
+
     eval {
 	$result = Load($yaml);
     };
@@ -124,7 +143,7 @@ YAML.pm) and fail otherwise.  Returns the result of loading the YAML.
 
 =cut
 
-sub yaml_file_ok($;$) {    
+sub yaml_file_ok($;$) {
     my $file = shift;
     my $msg  = shift;
     my $result;
@@ -137,7 +156,7 @@ sub yaml_file_ok($;$) {
 	    close $fh;
 	}
     };
-    
+
     my $test = Test::Builder->new();
     $msg = "$file contains valid YAML" unless $msg;
     $test->ok(!$@ && _is_yaml($result,$yaml), $msg);
@@ -154,12 +173,12 @@ Returns a list of all loaded YAML;
 
 =cut
 
-sub yaml_files_ok($;$) {    
+sub yaml_files_ok($;$) {
     my $file_glob = shift;
     my $msg       = shift;
     my @results;
     my $result;
-    
+
     my $test = Test::Builder->new();
     $msg = "$file_glob contains valid YAML files" unless $msg;
     foreach my $file (glob($file_glob)) {
@@ -179,8 +198,8 @@ sub yaml_files_ok($;$) {
             $test->diag("  Could not load file: $file.");
             return;
         }
-    }    
-    
+    }
+
     $test->ok(1, $msg);
     return \@results;
 }

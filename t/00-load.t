@@ -22,3 +22,19 @@ eval {
 if($@){
     diag("No YAML::Syck found");
 }
+
+eval {
+    require YAML::XS;
+    diag("YAML::XS version $YAML::XS::VERSION");
+};
+if($@){
+    diag("No YAML::XS found");
+}
+
+eval {
+    require YAML::Tiny;
+    diag("YAML::Tiny version $YAML::Tiny::VERSION");
+};
+if($@){
+    diag("No YAML::Tiny found");
+}
